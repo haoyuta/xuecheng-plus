@@ -11,3 +11,7 @@ Content-Type: application/json
 ###
 GET {{content_host}}/content/course/40
 Content-Type: application/json
+
+###
+GET {{content_host}}/content/courseTeacher/list/74
+Content-Type: application/json

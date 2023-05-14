@@ -42,7 +42,26 @@ public class TeachplanController {
         teachplanService.saveTeachplan(teachplanDto);
 
         teachplanService.selectTreeNodes(teachplanDto.getCourseId());
-
     }
 
+    @ApiOperation("课程计划删除")
+    @DeleteMapping("/teachplan/{id}")
+    public void deleteTeachplan(@PathVariable Long id){
+
+        teachplanService.deleteTeachplan(id);
+    }
+
+    @ApiOperation("课程计划上移")
+    @PostMapping("/teachplan/moveup/{id}")
+    public void moveUp(@PathVariable Long id){
+
+        teachplanService.moveUp(id);
+    }
+
+    @ApiOperation("课程计划下移")
+    @PostMapping("/teachplan/movedown/{id}")
+    public void moveDown(@PathVariable Long id){
+
+        teachplanService.moveDown(id);
+    }
 }
