@@ -1,24 +1,61 @@
-server:
-  servlet:
-    context-path: /system
-  port: 63110
+#server:
+#  servlet:
+#    context-path: /system
+#  port: 63110
+
 #微服务配置
 spring:
   application:
     name: system-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.88.130:3306/xuecheng_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: root
-# 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
+  cloud:
+    nacos:
+      server-addr: 192.168.88.130:8848
 
-# swagger 文档配置
-swagger:
-  title: "学成在线系统管理"
-  description: "系统管理接口"
-  base-package: com.xuecheng.system
-  enabled: true
-  version: 1.0.0
+      discovery: #服务注册相关配置
+        namespace: dev
+        group: xuecheng-plus-project
+
+      config: #配置文件相关配置
+        namespace: dev
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+
+          #扩展配置，通过content-service-dev.yaml间接的扩展配置
+        extension-configs:
+          - data-id: system-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true
+
+            #读取公用配置
+        shared-configs:
+              #读取接口文档配置
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+              #读取日志文件配置
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.88.130:3306/xuecheng_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: root
+
+  profiles:
+    active: dev  #环境名
+
+
+## 日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
+
+## swagger 文档配置
+#swagger:
+#  title: "学成在线系统管理"
+#  description: "系统管理接口"
+#  base-package: com.xuecheng.system
+#  enabled: true
+#  version: 1.0.0

@@ -1,29 +1,62 @@
-server:
-  servlet:
-    context-path: /content
-  port: 63040
+#server:
+#  servlet:
+#    context-path: /content
+#  port: 63040
+
+
 #微服务配置
+
+#只留下需要项目提交到注册中心的配置，其他配置可写在配置中心统一管理
 spring:
   application:
-    name: content-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.88.130:3306/xuecheng_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: root
-# 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
+    name: content-api  #服务名
+  cloud:
+    nacos:
+      server-addr: 192.168.88.130:8848
 
-swagger:
-  title: "学成在线内容管理系统"
-  description: "内容系统管理系统对课程相关信息进行管理"
-  base-package: com.xuecheng.content
-  enabled: true
-  version: 1.0.0
+      discovery:   #服务注册相关配置
+        namespace: dev
+        group: xuecheng-plus-project
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印SQL日志到控制台
-  global-config:
-    banner: off # 关闭mybatisplus启动图标
+      config:   #配置文件相关配置
+        namespace: dev
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+
+        #扩展配置，通过content-service-dev.yaml间接的扩展配置
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true
+
+        #读取公用配置
+        shared-configs:
+          #读取接口文档配置
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          #读取日志文件配置
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+  #  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.88.130:3306/xuecheng_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: root
+
+  profiles:
+    active: dev  #环境名
+
+
+##日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
+#
+#swagger:
+#  title: "学成在线内容管理系统"
+#  description: "内容系统管理系统对课程相关信息进行管理"
+#  base-package: com.xuecheng.content
+#  enabled: true
+#  version: 1.0.0
